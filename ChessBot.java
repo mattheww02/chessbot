@@ -35,9 +35,9 @@ public class ChessBot implements Player {
 
     // Minimax algorithm
     public int minimax(char[] board, int depth, boolean isMaximizingPlayer) {
-        if (depth == 0 || isGameOver(board)) {
-            return evaluateBoard(board);
-        }
+        // if (depth == 0 || isGameOver(board)) {
+        //     return evaluateBoard(board);
+        // }
 
         int bestValue;
         if (isMaximizingPlayer) {
@@ -86,17 +86,6 @@ public class ChessBot implements Player {
             case 'k': return -1000;
             default: return 0;
         }
-    }
-
-    // Placeholder: Checks if the game is over (could be expanded for checkmate, stalemate)
-    public boolean isGameOver(char[] board) {
-        // Simple example: check if one of the kings is missing
-        boolean hasWhiteKing = false, hasBlackKing = false;
-        for (char piece : board) {
-            if (piece == 'K') hasWhiteKing = true;
-            if (piece == 'k') hasBlackKing = true;
-        }
-        return !hasWhiteKing || !hasBlackKing;
     }
 
     // Placeholder: Generate possible moves for the current player
