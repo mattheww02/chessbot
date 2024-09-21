@@ -3,6 +3,12 @@ import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
+class InvalidMoveException extends Exception {
+    public InvalidMoveException(String message) {
+        super(message);
+    }
+}
+
 public class ChessGame {
     public static final int BOARD_SIZE = 8;
     public static final char EMPTY = '.';
@@ -30,15 +36,22 @@ public class ChessGame {
         board = INITIAL_BOARD.clone();
     }
 
+    private boolean isDiffColor(char a, char b){
+        return (a == EMPTY || b == EMPTY || ((Character.toLowerCase(a) == a) != (Character.toLowerCase(b) == b)));
+    }
+
     public boolean isLegalMove(Move move){
-        return false;
+        if (move.from == move.to || board[move.from] == EMPTY ||
+            isDiffColor(board[move.from], board[move.to])) return false;
+
+        return true;
     }
 
-    public char getPieceAt(int square){
-        return ' ';
-    }
-
-    public List<Move> getLegalMoves(){
+    public List<Move> getLegalMoves(boolean isWhite){
+        List<Move> moves = new ArrayList<Move>();
+        if (isWhite){
+            
+        }
         return new ArrayList<>();
     }
 
@@ -62,8 +75,13 @@ public class ChessGame {
         }
     }
 
-    private void updateBoard(Move move) {
-
+    private void updateBoard(Move move) throws InvalidMoveException {
+        System.out.println("Updating board...");
+        if (!isLegalMove(move)) throw new InvalidMoveException(move.toString());
+        System.out.println(move.to + ": " + board[move.to]);
+        System.out.println(move.from + ": " + board[move.from]);
+        board[move.to] = board[move.from];
+        board[move.from] = EMPTY;
     }
 
     public static void main(String[] args) {
@@ -73,20 +91,18 @@ public class ChessGame {
         boolean isWhiteTurn = true;
         game.printBoard();
 
-        // while (!game.isGameOver()){
-        //     if (isWhiteTurn){
-        //         System.out.println("White to move.");
-        //         Move whiteMove = whitePlayer.getMove(game.board, true);
-        //         game.updateBoard(whiteMove);
-        //     }
-        //     else{
-        //         System.out.println("Black to move.");
-        //         Move blackMove = blackPlayer.getMove(game.board, false);
-        //         game.updateBoard(blackMove);
-        //     }
-        //     isWhiteTurn = !isWhiteTurn;
-        // }
-
+        while (!game.isGameOver()) {
+            int from = (int)(Math.random() * game.board.length);
+            int to = (int)(Math.random() * game.board.length);
+            Move move = new Move(from, to);
+            if (game.isLegalMove(move))
+                try {
+                    game.updateBoard(move);
+                } catch (InvalidMoveException e) {
+                    System.out.println("Invalid move!");
+                }
+            game.printBoard();
+        }
         System.out.println("Game over!");
     }
 }
