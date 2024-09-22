@@ -2,40 +2,60 @@ package com.example.chessbot;
 
 import javax.swing.*;
 import java.awt.*;
-import chesspresso.*;
+import java.util.HashMap;
+import java.util.Map;
+
 import chesspresso.position.Position;
 
 public class ChessBoardGUI {
-    private static final int SIZE = 8; // Size of the chessboard
+    private static final int SIZE = 8;
     private static final Color LIGHT_COLOR = new Color(255, 206, 158);
     private static final Color DARK_COLOR = new Color(165, 105, 48);
 
-    private JFrame frame; // Declare the JFrame
-    private JPanel[][] squares; // Array to hold the square panels
+    private final JFrame frame;
+    private final Map<Integer, ImageIcon> whitePieceImages = new HashMap<>();
+    private final Map<Integer, ImageIcon> blackPieceImages = new HashMap<>();
 
     public ChessBoardGUI() {
+        // initialise piece icons
+        loadPieceImages();
+        
+        // initialise frame and board squares
         frame = new JFrame("Chess Board");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(new GridLayout(SIZE, SIZE));
-        squares = new JPanel[SIZE][SIZE]; // Initialize the squares array
 
-        // Create the board
+        // instantiate board squares
         for (int row = 0; row < SIZE; row++) {
             for (int col = 0; col < SIZE; col++) {
-                squares[row][col] = new JPanel();
-                squares[row][col].setBackground((row + col) % 2 == 0 ? LIGHT_COLOR : DARK_COLOR);
-                JLabel label = new JLabel("", SwingConstants.CENTER);
-                label.setFont(new Font("Arial Unicode MS", Font.PLAIN, 40));
-                squares[row][col].add(label);
-                frame.add(squares[row][col]);
+                JPanel square = new JPanel();
+                square.setBackground((row + col) % 2 == 0 ? LIGHT_COLOR : DARK_COLOR);
+                frame.add(square);
             }
         }
 
-        frame.setSize(400, 400);
+        frame.setSize(600, 600);
         frame.setVisible(true);
     }
 
+    private void loadPieceImages() {
+        whitePieceImages.put((int)chesspresso.Chess.PAWN, new ImageIcon(getClass().getResource("/images/pw.png")));
+        whitePieceImages.put((int)chesspresso.Chess.ROOK, new ImageIcon(getClass().getResource("/images/rw.png")));
+        whitePieceImages.put((int)chesspresso.Chess.KNIGHT, new ImageIcon(getClass().getResource("/images/nw.png")));
+        whitePieceImages.put((int)chesspresso.Chess.BISHOP, new ImageIcon(getClass().getResource("/images/bw.png")));
+        whitePieceImages.put((int)chesspresso.Chess.QUEEN, new ImageIcon(getClass().getResource("/images/qw.png")));
+        whitePieceImages.put((int)chesspresso.Chess.KING, new ImageIcon(getClass().getResource("/images/kw.png")));
+
+        blackPieceImages.put((int)chesspresso.Chess.PAWN, new ImageIcon(getClass().getResource("/images/pb.png")));
+        blackPieceImages.put((int)chesspresso.Chess.ROOK, new ImageIcon(getClass().getResource("/images/rb.png")));
+        blackPieceImages.put((int)chesspresso.Chess.KNIGHT, new ImageIcon(getClass().getResource("/images/nb.png")));
+        blackPieceImages.put((int)chesspresso.Chess.BISHOP, new ImageIcon(getClass().getResource("/images/bb.png")));
+        blackPieceImages.put((int)chesspresso.Chess.QUEEN, new ImageIcon(getClass().getResource("/images/qb.png")));
+        blackPieceImages.put((int)chesspresso.Chess.KING, new ImageIcon(getClass().getResource("/images/kb.png")));
+    }
+
     private String pieceToString(int piece, int color) {
+        // return unicode icon for the given piece + color
         if (color == chesspresso.Chess.WHITE){
             switch (piece) {
                 case chesspresso.Chess.KNIGHT: return "♘";
@@ -44,7 +64,7 @@ public class ChessBoardGUI {
                 case chesspresso.Chess.QUEEN: return "♕";
                 case chesspresso.Chess.KING: return "♔";
                 case chesspresso.Chess.PAWN: return "♙";
-                default: return ""; // Empty square
+                default: return "";
             }
         }
         switch (piece) {
@@ -54,28 +74,25 @@ public class ChessBoardGUI {
             case chesspresso.Chess.QUEEN: return "♛";
             case chesspresso.Chess.KING: return "♚";
             case chesspresso.Chess.PAWN: return "♟";
-            default: return ""; // Empty square
+            default: return "";
         }
     }
 
     public void updateBoard(Position position) {
         for (int row = 0; row < SIZE; row++) {
             for (int col = 0; col < SIZE; col++) {
-                int piece = position.getPiece(row * 8 + col); // Get piece at specific square
-                int color = position.getColor(row * 8 + col);
-                JLabel label;
+                JPanel square = (JPanel) frame.getContentPane().getComponent(row * SIZE + col);
+                square.removeAll(); // clear previous piece
 
-                if (piece == 0) {
-                    label = new JLabel();
-                } else {
-                    label = new JLabel(pieceToString(piece, color), SwingConstants.CENTER);
+                int piece = position.getPiece(row * SIZE + col); // get piece on given square
+                if (piece != chesspresso.Chess.NO_PIECE) {
+                    int color = position.getColor(row * SIZE + col);
+                    JLabel label = new JLabel(color == chesspresso.Chess.WHITE ? whitePieceImages.get(piece) : blackPieceImages.get(piece));
+                    square.add(label); // add piece image to square
                 }
 
-                label.setFont(new Font("Arial Unicode MS", Font.PLAIN, 40));
-                squares[row][col].removeAll(); // Clear previous piece
-                squares[row][col].add(label);
-                squares[row][col].revalidate(); // Refresh the square
-                squares[row][col].repaint();
+                square.revalidate();
+                square.repaint();
             }
         }
     }

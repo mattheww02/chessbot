@@ -2,21 +2,22 @@ package com.example.chessbot;
 
 import chesspresso.position.Position;
 import chesspresso.move.IllegalMoveException;
-import chesspresso.move.Move;
-import chesspresso.game.Game;
-import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class ChessGame {
 
-    private Position position;
-    private ChessBoardGUI gui;
+    private final Position position;
+    private final ChessBoardGUI gui;
+    private final ChessPlayer white;
+    private final ChessPlayer black;
     private Timer timer;
 
-    public ChessGame() {
+    public ChessGame(ChessPlayer white_, ChessPlayer black_) {
         position = Position.createInitialPosition(); // initialise game
         gui = new ChessBoardGUI(); // initialize board gui
+        white = white_;
+        black = black_;
         gui.updateBoard(position);
         startGameLoop();
     }
@@ -26,27 +27,14 @@ public class ChessGame {
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                if (!position.isTerminal()) {
-                    makeRandomMove();
-                } else {
+                if (position.isTerminal()) 
                     timer.cancel();
-                }
+                else if (position.getToPlay() == chesspresso.Chess.WHITE)
+                    makeMove(white.getMove(new Position(position)));
+                else
+                    makeMove(black.getMove(new Position(position)));
             }
         }, 0, 500); // delay (milliseconds)
-    }
-
-    private void makeRandomMove() {
-        short[] legalMoves = position.getAllMoves(); // Get legal moves (?)
-        if (legalMoves.length > 0) {
-            int randomIndex = new Random().nextInt(legalMoves.length);
-            short move = legalMoves[randomIndex];
-            makeMove(move);
-            gui.updateBoard(position);
-        }
-    }
-
-    public Position getPosition() {
-        return position;
     }
 
     public void makeMove(short move) {
@@ -60,7 +48,7 @@ public class ChessGame {
     }
 
     public static void main(String[] args) {
-        ChessGame game = new ChessGame();
+        ChessGame game = new ChessGame(new RandomBot(), new MaterialBot());
 
     }
 }

@@ -1,3 +1,6 @@
-com\example\chessbot\ChessGame.class
-com\example\chessbot\ChessBoardGUI.class
 com\example\chessbot\ChessGame$1.class
+com\example\chessbot\RandomBot.class
+com\example\chessbot\MaterialBot.class
+com\example\chessbot\ChessBoardGUI.class
+com\example\chessbot\ChessGame.class
+com\example\chessbot\ChessPlayer.class
