@@ -7,52 +7,49 @@ import chesspresso.position.Position;
 
 public class MinimaxBot implements ChessPlayer {
 
-    private int maxDepth;
-    private boolean isWhite;
+    private final int maxDepth;
 
-    public MinimaxBot(int maxDepth, boolean isWhite) {
+    public MinimaxBot(int maxDepth) {
         this.maxDepth = maxDepth;
-        this.isWhite = isWhite;
     }
 
     public short getMove(Position position){
-        // pick the move that gives the best material advantage
-        int eval = 0;
+        // follow minimax algorithm to get the best move with a lookahead of maxDepth
         short[] legalMoves = position.getAllMoves();
         shuffleArray(legalMoves);
         short bestMove = legalMoves[0];
+        int bestEval = Integer.MAX_VALUE;
         for (short move : legalMoves){
             try {
                 position.doMove(move);
             } catch (IllegalMoveException e) {}
-            int m = position.getMaterial();
-            System.out.println(m);
-            if ((isWhite && m > eval) || (!isWhite && m < eval)){
-                eval = m;
+            int eval = evalPosition(position, maxDepth - 1, false);
+            if (eval < bestEval){
+                bestEval = eval;
                 bestMove = move;
             }
-            eval = Math.max(eval, position.getMaterial());
             position.undoMove();
         }
         return bestMove;
     }
 
-    public int evalPosition(Position position, int depth){
-        if (depth == 0) return isWhite ? position.getMaterial() : -position.getMaterial();
+    public int evalPosition(Position position, int depth, boolean isMin){
+        if (depth == 0) return position.getMaterial();
         short[] moves = position.getAllMoves();
         shuffleArray(moves);
-        int bestEval = Integer.MIN_VALUE;
+        int bestEval = isMin ? Integer.MAX_VALUE : Integer.MIN_VALUE;
         for (short move : moves){
-            try {
+            try{
                 position.doMove(move);
-            } catch (IllegalMoveException e) {}
-            int eval = evalPosition(position, depth - 1);
-            if ((isWhite && eval > bestEval) || (!isWhite && eval < bestEval)){
+            }
+            catch (IllegalMoveException e) {}
+            int eval = evalPosition(position, depth - 1, !isMin);
+            if ((isMin && eval < bestEval) || (!isMin && eval > bestEval)){
                 bestEval = eval;
             }
             position.undoMove();
         }
-        return 0;
+        return bestEval;
     }
 
     static void shuffleArray(short[] ar) {

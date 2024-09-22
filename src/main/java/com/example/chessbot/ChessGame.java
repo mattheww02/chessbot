@@ -48,7 +48,7 @@ public class ChessGame {
     }
 
     public static void main(String[] args) {
-        ChessGame game = new ChessGame(new RandomBot(), new MaterialBot());
+        ChessGame game = new ChessGame(new MaterialBot(), new MinimaxBot(3));
 
     }
 }
