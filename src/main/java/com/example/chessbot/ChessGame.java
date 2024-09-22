@@ -13,11 +13,17 @@ public class ChessGame {
     private final ChessPlayer black;
     private Timer timer;
 
-    public ChessGame(ChessPlayer white_, ChessPlayer black_) {
+    public ChessGame(ChessPlayer white, ChessPlayer black) {
+        
+        this.white = white;
+        this.black = black;
         position = Position.createInitialPosition(); // initialise game
-        gui = new ChessBoardGUI(); // initialize board gui
-        white = white_;
-        black = black_;
+        if (white instanceof UserPlayer)
+            gui = new InteractiveBoardGUI((UserPlayer) white);
+        else if (black instanceof UserPlayer)
+            gui = new InteractiveBoardGUI((UserPlayer) black);
+        else
+            gui = new ChessBoardGUI(); // initialize board gui
         gui.updateBoard(position);
         startGameLoop();
     }
@@ -48,7 +54,9 @@ public class ChessGame {
     }
 
     public static void main(String[] args) {
-        ChessGame game = new ChessGame(new MaterialBot(), new MinimaxBot(3));
-
+        ChessGame game = new ChessGame(
+            new UserPlayer(),
+            new PositionalBot(3)
+        );
     }
 }

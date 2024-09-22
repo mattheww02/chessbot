@@ -4,38 +4,46 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
-
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import chesspresso.position.Position;
+import chesspresso.move.Move;
+import chesspresso.Chess;
 
 public class ChessBoardGUI {
-    private static final int SIZE = 8;
-    private static final Color LIGHT_COLOR = new Color(255, 206, 158);
-    private static final Color DARK_COLOR = new Color(165, 105, 48);
+    protected static final int SIZE = 8;
+    protected static final Color LIGHT_COLOR = new Color(255, 206, 158);
+    protected static final Color DARK_COLOR = new Color(165, 105, 48);
 
-    private final JFrame frame;
+    protected final JFrame frame;
     private final Map<Integer, ImageIcon> whitePieceImages = new HashMap<>();
     private final Map<Integer, ImageIcon> blackPieceImages = new HashMap<>();
+
+    private UserPlayer userPlayer; // The player that will interact with the GUI
+    private int sourceRow = -1, sourceCol = -1; // Track the user's selected piece
 
     public ChessBoardGUI() {
         // initialise piece icons
         loadPieceImages();
+
+        // initialise frame and board squares
+        frame = new JFrame("Chess Board");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setLayout(new GridLayout(SIZE, SIZE));
         
+        initFrame();
+    }
+
+    protected ChessBoardGUI(boolean defaultInit) {
+        // initialise piece icons
+        loadPieceImages();
+
         // initialise frame and board squares
         frame = new JFrame("Chess Board");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(new GridLayout(SIZE, SIZE));
 
-        // instantiate board squares
-        for (int row = 0; row < SIZE; row++) {
-            for (int col = 0; col < SIZE; col++) {
-                JPanel square = new JPanel();
-                square.setBackground((row + col) % 2 == 0 ? LIGHT_COLOR : DARK_COLOR);
-                frame.add(square);
-            }
-        }
-
-        frame.setSize(600, 600);
-        frame.setVisible(true);
+        if (defaultInit) initFrame();
     }
 
     private void loadPieceImages() {
@@ -54,28 +62,18 @@ public class ChessBoardGUI {
         blackPieceImages.put((int)chesspresso.Chess.KING, new ImageIcon(getClass().getResource("/images/kb.png")));
     }
 
-    private String pieceToString(int piece, int color) {
-        // return unicode icon for the given piece + color
-        if (color == chesspresso.Chess.WHITE){
-            switch (piece) {
-                case chesspresso.Chess.KNIGHT: return "♘";
-                case chesspresso.Chess.BISHOP: return "♗";
-                case chesspresso.Chess.ROOK: return "♖";
-                case chesspresso.Chess.QUEEN: return "♕";
-                case chesspresso.Chess.KING: return "♔";
-                case chesspresso.Chess.PAWN: return "♙";
-                default: return "";
+    private void initFrame() {
+        // instantiate board squares
+        for (int row = 0; row < SIZE; row++) {
+            for (int col = 0; col < SIZE; col++) {
+                JPanel square = new JPanel();
+                square.setBackground((row + col) % 2 == 0 ? LIGHT_COLOR : DARK_COLOR);
+                frame.add(square);
             }
         }
-        switch (piece) {
-            case chesspresso.Chess.KNIGHT: return "♞";
-            case chesspresso.Chess.BISHOP: return "♝";
-            case chesspresso.Chess.ROOK: return "♜";
-            case chesspresso.Chess.QUEEN: return "♛";
-            case chesspresso.Chess.KING: return "♚";
-            case chesspresso.Chess.PAWN: return "♟";
-            default: return "";
-        }
+
+        frame.setSize(600, 600);
+        frame.setVisible(true);
     }
 
     public void updateBoard(Position position) {
@@ -95,9 +93,5 @@ public class ChessBoardGUI {
                 square.repaint();
             }
         }
-    }
-    
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new ChessBoardGUI());
     }
 }
