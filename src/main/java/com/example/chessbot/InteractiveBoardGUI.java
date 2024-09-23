@@ -1,10 +1,13 @@
 package com.example.chessbot;
 
 import javax.swing.*;
+
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+
 import chesspresso.move.Move;
 import chesspresso.Chess;
+import chesspresso.move.IllegalMoveException;
 
 public class InteractiveBoardGUI extends ChessBoardGUI {
     private final UserPlayer userPlayer; // The player that will interact with the GUI
@@ -55,8 +58,11 @@ public class InteractiveBoardGUI extends ChessBoardGUI {
             int source = Chess.coorToSqi(sourceCol, sourceRow);
             int dest = Chess.coorToSqi(targetCol, targetRow);
             
-            // set the move for the player
-            userPlayer.setMove(source, dest);
+            try {
+                // set the move for the player
+                userPlayer.setMove(source, dest);
+            } 
+            catch (IllegalMoveException ex) {}
 
             // reset source square
             sourceRow = -1;
