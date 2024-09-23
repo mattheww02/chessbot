@@ -27,20 +27,21 @@ public class PositionalBot implements ChessPlayer {
             } catch (IllegalMoveException e) {}
             int eval = minMaxEval(position, maxDepth - 1, false);
             eval -= positionEval(position.getPiece(Move.getToSqi(move)), move, position.getColor(Move.getToSqi(move)) == Chess.WHITE);
-            System.out.println(eval);
+            //System.out.println(eval);
             if (eval < bestEval){
                 bestEval = eval;
                 bestMove = move;
             }
             position.undoMove();
         }
+        //System.out.println("-------------------------\n" + bestEval + "\n-------------------------");
         return bestMove;
     }
 
     public int minMaxEval(Position position, int depth, boolean isMin){
         if (position.isStaleMate()) return 0;
-        if (position.isMate()) return -50000;
-        if (depth == 0) return position.getMaterial();
+        if (position.isMate()) return isMin ? 50000 : -50000;
+        if (depth == 0) return isMin ? -position.getMaterial() : position.getMaterial();
         short[] moves = position.getAllMoves();
         shuffleArray(moves);
         int bestEval = isMin ? 50000 : -50000;

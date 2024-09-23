@@ -55,9 +55,9 @@ public class ChessGame {
     }
 
     public static void main(String[] args) {
-        ChessGame game = new ChessGame( //TODO: positional bot not fully working as white (or on even depth)
-            new UserPlayer(),
-            new PositionalBot(5)
+        ChessGame game = new ChessGame(
+            new MinimaxBot(3),
+            new AlphaBetaBot(5)
         );
     }
 }
