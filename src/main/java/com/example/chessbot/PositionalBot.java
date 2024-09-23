@@ -26,6 +26,8 @@ public class PositionalBot implements ChessPlayer {
                 position.doMove(move);
             } catch (IllegalMoveException e) {}
             int eval = minMaxEval(position, maxDepth - 1, false);
+            eval -= positionEval(position.getPiece(Move.getToSqi(move)), move, position.getColor(Move.getToSqi(move)) == Chess.WHITE);
+            System.out.println(eval);
             if (eval < bestEval){
                 bestEval = eval;
                 bestMove = move;
@@ -37,17 +39,17 @@ public class PositionalBot implements ChessPlayer {
 
     public int minMaxEval(Position position, int depth, boolean isMin){
         if (position.isStaleMate()) return 0;
-        if (position.isMate()) return Integer.MIN_VALUE;
+        if (position.isMate()) return -50000;
         if (depth == 0) return position.getMaterial();
         short[] moves = position.getAllMoves();
         shuffleArray(moves);
-        int bestEval = isMin ? Integer.MAX_VALUE : Integer.MIN_VALUE;
+        int bestEval = isMin ? 50000 : -50000;
         for (short move : moves){
             try{
                 position.doMove(move);
             }
             catch (IllegalMoveException e) {}
-            int eval = minMaxEval(position, depth - 1, !isMin) + positionEval(position.getPiece(Move.getToSqi(move)), move, position.getToPlay() == Chess.WHITE);
+            int eval = minMaxEval(position, depth - 1, !isMin) - positionEval(position.getPiece(Move.getToSqi(move)), move, position.getToPlay() == Chess.WHITE);
             if ((isMin && eval < bestEval) || (!isMin && eval > bestEval)){
                 bestEval = eval;
             }
