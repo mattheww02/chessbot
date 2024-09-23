@@ -57,11 +57,11 @@ public class PositionalBot implements ChessPlayer {
     }
 
     public int positionEval(int piece, short move, boolean isWhite){
-        if (isWhite && PositionEval.whitePieceMasks.containsKey(piece)){
-            return PositionEval.whitePieceMasks.get(piece)[Move.getToSqi(move)] - PositionEval.whitePieceMasks.get(piece)[Move.getFromSqi(move)];
+        if (isWhite && PieceSquareTable.white.containsKey(piece)){
+            return PieceSquareTable.white.get(piece)[Move.getToSqi(move)] - PieceSquareTable.white.get(piece)[Move.getFromSqi(move)];
         }
-        else if (PositionEval.blackPieceMasks.containsKey(piece)){
-            return PositionEval.blackPieceMasks.get(piece)[Move.getToSqi(move)] - PositionEval.blackPieceMasks.get(piece)[Move.getFromSqi(move)];
+        else if (PieceSquareTable.black.containsKey(piece)){
+            return PieceSquareTable.black.get(piece)[Move.getToSqi(move)] - PieceSquareTable.black.get(piece)[Move.getFromSqi(move)];
         }
         return 0;
     }

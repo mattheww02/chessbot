@@ -48,7 +48,8 @@ public class ChessGame {
             position.doMove(move);
         }
         catch (IllegalMoveException e){
-            //TODO
+            System.out.println("Illegal move: " + e.getMessage());
+            return;
         }
         gui.updateBoard(position);
     }
@@ -56,7 +57,7 @@ public class ChessGame {
     public static void main(String[] args) {
         ChessGame game = new ChessGame(
             new UserPlayer(),
-            new PositionalBot(3)
+            new PositionalBot(5)
         );
     }
 }
