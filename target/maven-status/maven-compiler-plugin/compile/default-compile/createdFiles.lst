@@ -11,4 +11,5 @@ com\example\chessbot\PositionalBot.class
 com\example\chessbot\InteractiveBoardGUI$1.class
 com\example\chessbot\AlphaBetaBot.class
 com\example\chessbot\MaterialBot.class
+com\example\chessbot\AlphaBetaBotV2.class
 com\example\chessbot\InteractiveBoardGUI.class

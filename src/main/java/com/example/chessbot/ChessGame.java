@@ -94,9 +94,11 @@ public class ChessGame {
 
     public static void main(String[] args) {
         ChessGame game = new ChessGame(
-            new MinimaxBot(3),
-            new AlphaBetaBot(5),
-            5
+            new AlphaBetaBotV2(5),
+            new AlphaBetaBotV2(5),
+            10
         );
-    }
+    } 
 }
+// to build:  mvn clean install
+// to run:    mvn exec:java -Dexec.mainClass="com.example.chessbot.ChessGame"
