@@ -5,13 +5,12 @@ import javax.swing.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-import chesspresso.move.Move;
 import chesspresso.Chess;
 import chesspresso.move.IllegalMoveException;
 
 public class InteractiveBoardGUI extends ChessBoardGUI {
-    private final UserPlayer userPlayer; // The player that will interact with the GUI
-    private int sourceRow = -1, sourceCol = -1; // Track the user's selected piece
+    private final UserPlayer userPlayer; // player interacting with GUI
+    private int sourceRow = -1, sourceCol = -1; // selected square
 
     public InteractiveBoardGUI(UserPlayer userPlayer) {
         super(false);
@@ -27,7 +26,7 @@ public class InteractiveBoardGUI extends ChessBoardGUI {
                 square.setBackground((row + col) % 2 == 0 ? ChessBoardGUI.LIGHT_COLOR : ChessBoardGUI.DARK_COLOR);
                 
                 // add mouse listener to capture clicks
-                final int r = row, c = col;
+                final int r = SIZE - 1 - row, c = col;
                 square.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mousePressed(MouseEvent e) {
@@ -35,12 +34,9 @@ public class InteractiveBoardGUI extends ChessBoardGUI {
                     }
                 });
                 
-                frame.add(square);
+                boardPanel.add(square);
             }
         }
-
-        frame.setSize(600, 600);
-        frame.setVisible(true);
     }
 
     private void handleSquareClick(int row, int col) {
@@ -61,8 +57,7 @@ public class InteractiveBoardGUI extends ChessBoardGUI {
             try {
                 // set the move for the player
                 userPlayer.setMove(source, dest);
-            } 
-            catch (IllegalMoveException ex) {}
+            } catch (IllegalMoveException ex) {}
 
             // reset source square
             sourceRow = -1;

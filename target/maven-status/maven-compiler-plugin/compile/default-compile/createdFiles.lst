@@ -1,4 +1,5 @@
 com\example\chessbot\UserPlayer.class
+com\example\chessbot\ChessGame$2.class
 com\example\chessbot\RandomBot.class
 com\example\chessbot\ChessBoardGUI.class
 com\example\chessbot\MinimaxBot.class
