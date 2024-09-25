@@ -9,9 +9,11 @@ com\example\chessbot\ChessGame.class
 com\example\chessbot\ChessPlayer.class
 com\example\chessbot\ChessGame$1.class
 com\example\chessbot\PositionalBot.class
+com\example\chessbot\TranspositionBotV2.class
 com\example\chessbot\InteractiveBoardGUI$1.class
 com\example\chessbot\AlphaBetaBot.class
 com\example\chessbot\MaterialBot.class
 com\example\chessbot\Cache.class
 com\example\chessbot\AlphaBetaBotV2.class
 com\example\chessbot\InteractiveBoardGUI.class
+com\example\chessbot\TranspositionBot.class
