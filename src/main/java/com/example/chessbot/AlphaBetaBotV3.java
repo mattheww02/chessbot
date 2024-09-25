@@ -9,16 +9,18 @@ import chesspresso.move.IllegalMoveException;
 import chesspresso.move.Move;
 import chesspresso.position.Position;
 
-public class AlphaBetaBotV2 implements ChessPlayer {
+public class AlphaBetaBotV3 implements ChessPlayer {
 
     private static final int INFINITY = 50000;
     private static final int CASTLE_BONUS = 50;
     private final int maxDepth;
     private final Map<Long,Integer> positionHistory;
+    private final Cache<Long,Integer> transpositionTable;
 
-    public AlphaBetaBotV2(int maxDepth) {
+    public AlphaBetaBotV3(int maxDepth) {
         this.maxDepth = maxDepth;
         this.positionHistory = new HashMap<>();
+        this.transpositionTable = new Cache<>(10000);
     }
 
     public short getMove(Position position){
@@ -47,10 +49,10 @@ public class AlphaBetaBotV2 implements ChessPlayer {
         if (position.isMate()) return INFINITY + 1000 * depth;
         if (position.isTerminal()) return 0;
         if (positionHistory.getOrDefault(position.getHashCode(), 0) >= 3) return -INFINITY;
-        if (depth == 0) return -position.getMaterial();
+        //if (depth == 0) return -position.getMaterial();
 
         int minEval = INFINITY;
-        short[] moves = getOrderedMoves(position);
+        short[] moves = depth > 0 ? getOrderedMoves(position) : position.getAllCapturingMoves(); //TODO: do this faster?
 
         if (moves.length == 0) return -position.getMaterial();
 
@@ -75,10 +77,10 @@ public class AlphaBetaBotV2 implements ChessPlayer {
         if (position.isMate()) return -INFINITY - 1000 * depth;
         if (position.isTerminal()) return 0; //TODO: avoid draw by repetition in winning positions
         if (positionHistory.getOrDefault(position.getHashCode(), 0) >= 3) return INFINITY;
-        if (depth == 0) return position.getMaterial();
+        //if (depth == 0) return position.getMaterial();
 
         int maxEval = -INFINITY;
-        short[] moves = getOrderedMoves(position);
+        short[] moves = depth > 0 ? getOrderedMoves(position) : position.getAllCapturingMoves();
 
         if (moves.length == 0) return position.getMaterial();
 
@@ -136,6 +138,11 @@ public class AlphaBetaBotV2 implements ChessPlayer {
         boolean isWhite = position.getToPlay() != Chess.WHITE;
         int result = 0;
 
+        // check if castling is still possible
+        // if ((position.getCastles() & (isWhite ? Position.WHITE_CASTLE : Position.BLACK_CASTLE)) != 0){
+        //     result -= CASTLE_BONUS;
+        // } //TODO: fix
+
         if (Move.isCastle(move)){
             result += CASTLE_BONUS;
             // deal with positional changes due to castling
@@ -166,7 +173,7 @@ public class AlphaBetaBotV2 implements ChessPlayer {
                 result -= PieceSquareTable.black.get((int)Chess.KING)[60];
             }
         }
-        else{
+        else{ //TODO: check if this is actually getting the right PST values
             // lookup piece square table to evaluate new position after move
             if (isWhite && PieceSquareTable.white.containsKey(piece)){
                 result += PieceSquareTable.white.get(piece)[Move.getToSqi(move)] - PieceSquareTable.white.get(piece)[Move.getFromSqi(move)];

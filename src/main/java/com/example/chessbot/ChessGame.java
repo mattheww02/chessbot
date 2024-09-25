@@ -94,7 +94,7 @@ public class ChessGame {
 
     public static void main(String[] args) {
         ChessGame game = new ChessGame(
-            new AlphaBetaBotV2(5),
+            new PositionalBot(3),
             new AlphaBetaBotV2(5),
             10
         );

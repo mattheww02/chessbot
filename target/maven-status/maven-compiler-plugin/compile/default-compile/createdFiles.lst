@@ -1,6 +1,7 @@
 com\example\chessbot\UserPlayer.class
 com\example\chessbot\ChessGame$2.class
 com\example\chessbot\RandomBot.class
+com\example\chessbot\AlphaBetaBotV3.class
 com\example\chessbot\ChessBoardGUI.class
 com\example\chessbot\MinimaxBot.class
 com\example\chessbot\PieceSquareTable.class
@@ -11,5 +12,6 @@ com\example\chessbot\PositionalBot.class
 com\example\chessbot\InteractiveBoardGUI$1.class
 com\example\chessbot\AlphaBetaBot.class
 com\example\chessbot\MaterialBot.class
+com\example\chessbot\Cache.class
 com\example\chessbot\AlphaBetaBotV2.class
 com\example\chessbot\InteractiveBoardGUI.class
