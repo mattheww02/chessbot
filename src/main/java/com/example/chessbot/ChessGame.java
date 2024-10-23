@@ -95,7 +95,7 @@ public class ChessGame {
     public static void main(String[] args) {
         ChessGame game = new ChessGame(
             new PositionalBot(3),
-            new TranspositionBotV2(3, 6, 30000),
+            new AlphaBetaBotV2(5),
             10
         );
     } 
